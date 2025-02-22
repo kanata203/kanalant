@@ -407,12 +407,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   distance: 10
-  raycount: 24
-  enemyFOV: 180
-  wall_distance: 0
+  raycount: 12
+  enemyFOV: 360
   player_pos: {x: 0, y: 0, z: 0}
   wall_pos: {x: 0, y: 0, z: 0}
-  enemy_speed: 2
+  enemy_speed: 5
 --- !u!1001 &1213162181
 PrefabInstance:
   m_ObjectHideFlags: 0
