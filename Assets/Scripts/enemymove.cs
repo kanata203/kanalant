@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using System;
 using UnityEngine.Timeline;
+using System.Threading;
 
 public class enemymove : MonoBehaviour
 {
@@ -21,6 +22,13 @@ public class enemymove : MonoBehaviour
     Vector3 enemy_advance;
     public float enemy_speed;
     float time;
+    [SerializeField]
+    GameObject bullet;
+    [SerializeField]
+    Transform barrel;
+    [SerializeField]
+    bool isattack;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -38,7 +46,11 @@ public class enemymove : MonoBehaviour
     {
         time += Time.deltaTime;
         enemy_advance = transform.forward;
-        rb.velocity = enemy_advance.normalized * enemy_speed;
+        if (isattack)
+        {
+            rb.velocity = enemy_advance.normalized * enemy_speed;
+        }
+        
         float minwalldist = 1000f;
         Vector3 vector = transform.position;//npc‚ÌÀ•W
         float anglestep = enemyFOV / raycount;
@@ -79,7 +91,24 @@ public class enemymove : MonoBehaviour
             
         }
         
-        
+        if(hitplayer == true)
+        {
+            isattack = true;
+            transform.LookAt(player_pos);
+            //rb.velocity = Vector3.zero;
+            if (time > 0.2f) 
+            {
+                enemyattack();
+                time = 0;
+            }
+            
+        }
+        else
+        {
+            isattack = false;
+            Debug.Log(isattack);
+            rb.velocity = enemy_advance.normalized * enemy_speed;
+        }
        float walldist = Vector3.Distance(wall_pos, transform.position);
         Debug.Log(walldist);
        if (walldist < 2.5f)
@@ -87,7 +116,7 @@ public class enemymove : MonoBehaviour
             
             Vector3 walldir = (wall_pos - transform.position).normalized;
             float angle = Vector3.Angle(transform.forward, walldir);
-            if(angle >= -40 || angle <= 40)
+            if(angle >= -100 || angle <= 100)
             {
                 if(time >= 1f)
                 {
@@ -101,5 +130,9 @@ public class enemymove : MonoBehaviour
                  
             }
         }
+    }
+    void enemyattack()
+    {
+        Instantiate(bullet, barrel.position,barrel.rotation);
     }
 }
