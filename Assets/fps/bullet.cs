@@ -17,16 +17,16 @@ public class bullet : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-       
+
     }
-   
-    
+
+
 
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.tag == "sute-zi")
         {
-            
+
             Destroy(this.gameObject);
 
 
@@ -35,6 +35,15 @@ public class bullet : MonoBehaviour
         {
             //É_ÉÅÅ[ÉWèàóù
         }
+        if (collision.gameObject.tag == "player")
+        {
+            playerhp playerhp = collision.gameObject.GetComponent<playerhp>();
+            if (playerhp != null)
+            {
+                playerhp.takedamege(1);
+                
+            }
+        }
+        Destroy(this.gameObject);
     }
-
 }

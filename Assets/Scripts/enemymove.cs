@@ -46,10 +46,10 @@ public class enemymove : MonoBehaviour
     {
         time += Time.deltaTime;
         enemy_advance = transform.forward;
-        if (isattack)
+        /*if (isattack)
         {
             rb.velocity = enemy_advance.normalized * enemy_speed;
-        }
+        }*/
         
         float minwalldist = 1000f;
         Vector3 vector = transform.position;//npc‚ÌÀ•W
@@ -95,7 +95,7 @@ public class enemymove : MonoBehaviour
         {
             isattack = true;
             transform.LookAt(player_pos);
-            //rb.velocity = Vector3.zero;
+            rb.velocity = Vector3.zero;
             if (time > 0.2f) 
             {
                 enemyattack();
