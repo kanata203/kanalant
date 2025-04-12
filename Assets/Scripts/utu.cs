@@ -84,7 +84,7 @@ public class utu : MonoBehaviour
         RaycastHit hitinfo;
         //action.Play();
 
-        if (Input.GetMouseButton(0)&&cooltime<Time.time - time)
+        if (Input.GetMouseButtonDown(0)&&cooltime<Time.time - time)
         {
             time = Time.time;
             audioSource.PlayOneShot(fireSE);
@@ -94,7 +94,10 @@ public class utu : MonoBehaviour
             {
                 if(hitinfo.collider.tag == "enemy")
                 {
-                    if(hitinfo.collider.GetComponent<enemydeath>() != null)
+
+                    hitinfo.collider.GetComponent<enemyhp>().damage();
+                    Debug.Log(hitinfo.collider.GetComponent<enemyhp>().hp);
+                    if (hitinfo.collider.GetComponent<enemydeath>() != null)
                     {
                         hitinfo.collider.GetComponent<enemydeath>().banana = bananaman;
                         Debug.Log(bananaman.killnumber);

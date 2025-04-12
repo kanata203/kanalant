@@ -83,7 +83,7 @@ public class enemymove : MonoBehaviour
 
                     }
 
-                    Debug.Log(wall_pos);
+                    //Debug.Log(wall_pos);
                 }
                 
                 
@@ -110,7 +110,7 @@ public class enemymove : MonoBehaviour
             rb.velocity = enemy_advance.normalized * enemy_speed;
         }
        float walldist = Vector3.Distance(wall_pos, transform.position);
-        Debug.Log(walldist);
+        //Debug.Log(walldist);
        if (walldist < 2.5f)
         {
             

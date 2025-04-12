@@ -24,6 +24,7 @@ public class bullet : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        Debug.Log(collision.gameObject.tag);
         if (collision.gameObject.tag == "sute-zi")
         {
 
@@ -33,7 +34,8 @@ public class bullet : MonoBehaviour
         }
         if (collision.gameObject.tag == "enemy")
         {
-            //É_ÉÅÅ[ÉWèàóù
+            
+           
         }
         if (collision.gameObject.tag == "player")
         {
