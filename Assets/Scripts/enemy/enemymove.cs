@@ -5,19 +5,20 @@ using UnityEngine.AI;
 using System;
 using UnityEngine.Timeline;
 using System.Threading;
+using UnityEditor.PackageManager;
 
 public class enemymove : MonoBehaviour
 {
     Ray ray;
-   RaycastHit hit;
-   
+    RaycastHit hit;
+
     public float distance = 1;
     public int raycount = 6;
     public float enemyFOV = 180;
-    
+
     public Vector3 player_pos;
     public Vector3 wall_pos;
-   
+
     Rigidbody rb;
     Vector3 enemy_advance;
     public float enemy_speed;
@@ -28,10 +29,12 @@ public class enemymove : MonoBehaviour
     Transform barrel;
     [SerializeField]
     bool isattack;
+    Animator animator;
 
     // Start is called before the first frame update
     void Start()
     {
+        animator = GetComponent<Animator>();
         time = 0;
         rb = GetComponent<Rigidbody>();
     }
@@ -50,33 +53,33 @@ public class enemymove : MonoBehaviour
         {
             rb.velocity = enemy_advance.normalized * enemy_speed;
         }*/
-        
+
         float minwalldist = 1000f;
         Vector3 vector = transform.position;//npcÇÃç¿ïW
         float anglestep = enemyFOV / raycount;
-       
+
         bool hitplayer = false;
         float start_angle = transform.eulerAngles.y - enemyFOV / 2;
-        for (int i = 0; i < raycount+1; i++) 
+        for (int i = 0; i < raycount + 1; i++)
         {
             //float angle = anglestep * i + start_angle;
             float angle = start_angle - i * anglestep;
-            Vector3 dic = new Vector3(Mathf.Cos(angle * Mathf.Deg2Rad),0f,Mathf.Sin(angle * Mathf.Deg2Rad));
+            Vector3 dic = new Vector3(Mathf.Cos(angle * Mathf.Deg2Rad), 0f, Mathf.Sin(angle * Mathf.Deg2Rad));
             ray = new Ray(vector, dic);
             Debug.DrawRay(vector, ray.direction * distance, Color.red);
-            
-            if(Physics.Raycast(ray,out hit,distance))//ÉåÉCÇ™âΩÇ©Ç…ìñÇΩÇ¡ÇΩÇÁ
+
+            if (Physics.Raycast(ray, out hit, distance))//ÉåÉCÇ™âΩÇ©Ç…ìñÇΩÇ¡ÇΩÇÁ
             {
-               
-                if(hit.collider.tag == "player" && !hitplayer)
+
+                if (hit.collider.tag == "player" && !hitplayer)
                 {
                     player_pos = hit.collider.transform.position;
                     hitplayer = true;
                 }
-                if(hit.collider.tag == "wall")
+                if (hit.collider.tag == "wall")
                 {
                     float dist = Vector3.Distance(hit.point, transform.position);
-                    if(dist < minwalldist)
+                    if (dist < minwalldist)
                     {
                         minwalldist = dist;
                         wall_pos = hit.point;
@@ -85,23 +88,23 @@ public class enemymove : MonoBehaviour
 
                     //Debug.Log(wall_pos);
                 }
-                
-                
+
+
             }
-            
+
         }
-        
-        if(hitplayer == true)
+
+        if (hitplayer == true)
         {
             isattack = true;
             transform.LookAt(player_pos);
             rb.velocity = Vector3.zero;
-            if (time > 0.2f) 
+            if (time > 0.2f)
             {
                 enemyattack();
                 time = 0;
             }
-            
+
         }
         else
         {
@@ -109,30 +112,45 @@ public class enemymove : MonoBehaviour
             Debug.Log(isattack);
             rb.velocity = enemy_advance.normalized * enemy_speed;
         }
-       float walldist = Vector3.Distance(wall_pos, transform.position);
+        float walldist = Vector3.Distance(wall_pos, transform.position);
         //Debug.Log(walldist);
-       if (walldist < 2.5f)
+        if (walldist < 2.5f)
         {
-            
+
             Vector3 walldir = (wall_pos - transform.position).normalized;
             float angle = Vector3.Angle(transform.forward, walldir);
-            if(angle >= -100 || angle <= 100)
+            if (angle >= -100 || angle <= 100)
             {
-                if(time >= 1f)
+                if (time >= 1f)
                 {
                     float rota;
-                    do {rota = UnityEngine.Random.Range(-125, 125); } while (Mathf.Abs(rota) < 20f);
-                    transform.Rotate(new Vector3(0, rota ,0));
+                    do { rota = UnityEngine.Random.Range(-125, 125); } while (Mathf.Abs(rota) < 20f);
+                    transform.Rotate(new Vector3(0, rota, 0));
                     Debug.Log("tomare");
                     time = 0;
                 }
-                
-                 
+
+
             }
         }
     }
     void enemyattack()
     {
-        Instantiate(bullet, barrel.position,barrel.rotation);
+        animator.SetTrigger("attack trigger");
+        Instantiate(bullet, barrel.position, barrel.rotation);
+        Ray ray = new Ray(barrel.position, barrel.forward);
+        RaycastHit hitinfo;
+        if (Physics.Raycast(ray, out hitinfo, 500f, ~LayerMask.GetMask("bullet")))
+        {
+            Debug.Log(hitinfo.collider.tag);
+            if (hitinfo.collider.tag == "player")
+            {
+
+                hitinfo.collider.GetComponent<playerhp>().takedamege(1);
+
+
+            }
+
+        }
     }
 }

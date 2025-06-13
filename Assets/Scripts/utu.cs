@@ -90,8 +90,9 @@ public class utu : MonoBehaviour
             audioSource.PlayOneShot(fireSE);
             Instantiate(bullet, barrel.position, camera.rotation);
 
-            if(Physics.Raycast(ray.origin, ray.direction * 100, out hitinfo))
+            if(Physics.Raycast(ray,out hitinfo, 500f,~LayerMask.GetMask("bullet")))
             {
+                Debug.Log(hitinfo.collider.tag);
                 if(hitinfo.collider.tag == "enemy")
                 {
 
